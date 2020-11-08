@@ -30,7 +30,6 @@
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo/demo.xml',
         'demo/cron_instance_create.xml',
     ],
 }

@@ -28,12 +28,12 @@ class instance_monitoring(models.Model):
     @api.depends('ram_capacity', 'ram_available')
     def _compute_ram_consumption(self):
         for r in self:
-            r.ram_consumption = 1 - r.ram_available / r.ram_capacity
+            r.ram_consumption = 100.0 * (1 - r.ram_available / r.ram_capacity)
 
     @api.depends('disk_capacity', 'disk_available')
     def _compute_disk_consumption(self):
         for r in self:
-            r.disk_consumption = 1 - r.disk_available / r.disk_capacity
+            r.disk_consumption = 100.0 * (1 - r.disk_available / r.disk_capacity)
 
     @api.model
     def instance_create(self):
@@ -47,5 +47,4 @@ class instance_monitoring(models.Model):
             'cpu_consumption': psutil.cpu_percent(),
             'cpu_freq': psutil.cpu_freq().current,
         }
-        instance = self.env["odoo.instance.monitoring"].create(data)
-        instance.action_validate()
+        self.env["odoo.instance.monitoring"].create(data)

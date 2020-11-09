@@ -1,35 +1,36 @@
 <odoo>
     <data>
-        <!--        <record model="ir.ui.view" id="instance_form_view">-->
-        <!--            <field name="name">instance.form</field>-->
-        <!--            <field name="model">odoo.instance.monitoring</field>-->
-        <!--            <field name="arch" type="xml">-->
-        <!--                <form string="Form">-->
-        <!--                    <sheet>-->
-        <!--                        <group>-->
-        <!--                            <field name="host_name" readonly="1"/>-->
-        <!--                            <field name="check_date" readonly="1"/>-->
-        <!--                        </group>-->
-        <!--                        <group>-->
-        <!--                            <field name="ram_capacity" readonly="1"/>-->
-        <!--                            <field name="ram_available" readonly="1"/>-->
-        <!--                            <field name="ram_consumption" readonly="1"/>-->
-        <!--                        </group>-->
-        <!--                        <group>-->
-        <!--                            <field name="disk_capacity" readonly="1"/>-->
-        <!--                            <field name="disk_available" readonly="1"/>-->
-        <!--                            <field name="disk_consumption" readonly="1"/>-->
-        <!--                        </group>-->
-        <!--                        <group>-->
-        <!--                            <field name="cpu_number" readonly="1"/>-->
-        <!--                            <field name="cpu_consumption" readonly="1"/>-->
-        <!--                            <field name="cpu_freq" readonly="1"/>-->
-        <!--                        </group>-->
-        <!--                    </sheet>-->
+        <record model="ir.ui.view" id="instance_form_view">
+            <field name="name">instance.form</field>
+            <field name="model">odoo.instance.monitoring</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <sheet>
+                        <group>
+                            <field name="host_name" readonly="1"/>
+                            <field name="check_date" readonly="1"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="ram_capacity" readonly="1"/>
+                            <field name="ram_available" readonly="1"/>
+                            <field name="ram_consumption" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="disk_capacity" readonly="1"/>
+                            <field name="disk_available" readonly="1"/>
+                            <field name="disk_consumption" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="cpu_number" readonly="1"/>
+                            <field name="cpu_consumption" readonly="1"/>
+                            <field name="cpu_freq" readonly="1"/>
+                        </group>
+                    </sheet>
 
-        <!--                </form>-->
-        <!--            </field>-->
-        <!--        </record>-->
+                </form>
+            </field>
+        </record>
 
         <!-- Kanban view -->
         <record model="ir.ui.view" id="instance_kanban_view">
@@ -39,19 +40,34 @@
                 <kanban>
                     <templates>
                         <t t-name="kanban-box">
-                            <div t-attf-class="oe_kanban_content">
-                                <b><field name="host_name"/></b>
+                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.value)}">
+                                <b>
+                                    <center>
+                                        <field name="host_name"/>
+                                        <field name="color" invisible="1"/>
+                                    </center>
+                                </b>
                                 <br/>
                                 Check date:
-                                <field name="check_date"/>
+                                <b>
+                                    <field name="check_date"/>
+                                </b>
                                 <br/>
-                                RAM Consumption:
-                                <field name="ram_consumption" widget="progressbar"/>
-                                <br/>
-                                DISK Consumption:
+                                DISK Available:
+                                <b>
+                                    <field name="disk_available"/>
+                                    Gib
+                                </b>
                                 <field name="disk_consumption" widget="progressbar"/>
                                 <br/>
-                                CPU Consumption:
+                                RAM Available:
+                                <b>
+                                    <field name="ram_available"/>
+                                    Gib
+                                </b>
+                                <field name="ram_consumption" widget="progressbar"/>
+                                <br/>
+                                CPU Consumption: <b><field name="cpu_freq"/> MHz</b>
                                 <field name="cpu_consumption" widget="progressbar"/>
                             </div>
                         </t>
@@ -64,8 +80,9 @@
             <field name="name">instance.tree</field>
             <field name="model">odoo.instance.monitoring</field>
             <field name="arch" type="xml">
-                <tree string="Course Tree">
+                <tree decoration-danger="state=='0'" decoration-info="state=='1'">
                     <field name="host_name"/>
+                    <field name="state"/>
                     <field name="check_date" readonly="1"/>
                     <field name="ram_capacity" readonly="1"/>
                     <field name="ram_available" readonly="1"/>
@@ -83,7 +100,7 @@
         <record model="ir.actions.act_window" id="instance_list_action">
             <field name="name">Instance</field>
             <field name="res_model">odoo.instance.monitoring</field>
-            <field name="view_mode">kanban,tree</field>
+            <field name="view_mode">kanban,tree,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">Create the first !</p>
             </field>
